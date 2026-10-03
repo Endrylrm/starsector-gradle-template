@@ -76,8 +76,12 @@ modVersion=0.1.0
 modAuthor=Your Name
 modDescription=A Gradle template for Starsector mods.
 modPlugin=org.example.ExampleModPlugin
-modJarFile=ExampleMod
+modJarList=jars/ExampleMod.jar,jars/ExampleMod2.jar
 gameVersion=0.98a
+
+modDependency.1.id=example_dependency
+modDependency.1.name=Example Mod Dependency
+modDependency.1.version=0.1.0
 ```
 
 ### Game properties
@@ -87,23 +91,27 @@ gameVersion=0.98a
 
 ### mod_info.json properties
 
-| Property       | Description                                       |
-|----------------|---------------------------------------------------|
-| modId          | Your Mod Id                                       |
-| modName        | Mod name displayed in Starsector                  |
-| modVersion     | Current Mod version (defaults to 0.1.0)           |
-| modAuthor      | Mod author name / nickname                        |
-| modIsUtility   | Is this a utility mod? (defaults to false)        |
-| modDescription | Mod description                                   |
-| modPlugin      | Main Java class used as the mod plugin            |
-| modJarFile     | Jar file name when built (defaults to modId)      |
-| gameVersion    | Target Starsector version (defaults to 0.98a-RC8) |
+| Property                | Description                                              |
+|-------------------------|----------------------------------------------------------|
+| modId                   | Your Mod Id                                              |
+| modName                 | Mod name displayed in Starsector                         |
+| modVersion              | Current Mod version (defaults to 0.1.0)                  |
+| modAuthor               | Mod author name / nickname                               |
+| modIsUtility            | Is this a utility mod? (defaults to false)               |
+| modDescription          | Mod description                                          |
+| modPlugin               | Main Java class used as the mod plugin                   |
+| modJarList              | Jars file paths that this mod have                       |
+| gameVersion             | Target Starsector version (defaults to 0.98a-RC8)        |
+| modDependency.*.id      | Mod Dependency ID (* is the index, starting from 1)      |
+| modDependency.*.name    | Mod Dependency Name (* is the index, starting from 1)    |
+| modDependency.*.version | Mod Dependency Version (* is the index, starting from 1) |
 
 ### Build properties
 
-| Property       | Description                                       |
-|----------------|---------------------------------------------------|
-| modFolder      | Your Mod Id                                       |
+| Property        | Description                                       |
+|-----------------|---------------------------------------------------|
+| modOutputJar    | Output Jar file name.                             |
+| modFolder       | Name of the folder built by gradle.               |
 
 ## Building the Project
 
