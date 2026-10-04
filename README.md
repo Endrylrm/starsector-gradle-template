@@ -111,7 +111,7 @@ modDependency.1.version=0.1.0
 | Property        | Description                                       |
 |-----------------|---------------------------------------------------|
 | modOutputJar    | Output Jar file name.                             |
-| modFolder       | Name of the folder built by gradle.               |
+| modFolder       | Name of the mod folder built by gradle.           |
 
 ## Building the Project
 

@@ -31,6 +31,7 @@ val modInfo = ModInfo(
 val modInfoJson = modInfo.toJson()
 
 // build configuration
+val modFolder = properties.getOrDefault("modFolder", modInfo.id)
 val modOutputJar = properties.getOrDefault("modOutputJar", modInfo.id)
 
 group = "org.example"
@@ -83,7 +84,7 @@ tasks.register<Copy>("buildMod") {
     dependsOn("generateModInfo")
 
     println("Build mod: ${modInfo.name}...")
-    val modDir = layout.buildDirectory.dir("mod/${modInfo.id}")
+    val modDir = layout.buildDirectory.dir("mod/${modFolder}")
 
     into(modDir)
 
@@ -100,8 +101,8 @@ tasks.register<Sync>("installMod") {
     dependsOn("buildMod")
 
     println("Installing mod: ${modInfo.name} in Starsector mods folder...")
-    val modDir = layout.buildDirectory.dir("mod/${modInfo.id}")
-    val starsectorModsDir = file("$starsectorDir/mods/${modInfo.id}")
+    val modDir = layout.buildDirectory.dir("mod/${modFolder}")
+    val starsectorModsDir = file("$starsectorDir/mods/${modFolder}")
 
     from(modDir)
     into(starsectorModsDir)
