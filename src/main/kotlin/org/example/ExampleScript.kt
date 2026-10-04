@@ -3,11 +3,14 @@ package org.example
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
 
-class ExampleScript : EveryFrameScript {
+class ExampleScript : EveryFrameScript
+{
     private var done = false
 
-    override fun advance(amount: Float) {
-        if (done) {
+    override fun advance(amount: Float)
+    {
+        if (done)
+        {
             return
         }
 
@@ -15,11 +18,13 @@ class ExampleScript : EveryFrameScript {
         done = true
     }
 
-    override fun isDone(): Boolean {
+    override fun isDone(): Boolean
+    {
         return done
     }
 
-    override fun runWhilePaused(): Boolean {
+    override fun runWhilePaused(): Boolean
+    {
         return false
     }
 }
