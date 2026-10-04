@@ -11,8 +11,8 @@ class ExampleScript : EveryFrameScript {
             return
         }
 
-        Global.getLogger(javaClass).error("My mod - Script has already advanced!")
-        done = true;
+        Global.getLogger(javaClass).info("My mod - Script has already advanced!")
+        done = true
     }
 
     override fun isDone(): Boolean {
