@@ -25,7 +25,7 @@ modBuilder {
 
         modPlugin = "org.example.ExampleModPlugin"
         /*
-        totalConversion = false
+        totalConversion = true
 
         replace {
             add("data/missions/mission_list.csv")

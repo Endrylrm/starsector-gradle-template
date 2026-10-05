@@ -1,4 +1,4 @@
-package org.endrylrm.ModBuilder.model
+package org.endrylrm.ModBuilder.containers
 
 class JarContainer {
     private val jars = mutableListOf<String>()

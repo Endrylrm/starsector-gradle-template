@@ -1,4 +1,4 @@
-package org.endrylrm.ModBuilder.model
+package org.endrylrm.ModBuilder.containers
 
 class ReplaceContainer {
     private val replace = mutableListOf<String>()

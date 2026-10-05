@@ -4,10 +4,10 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import javax.inject.Inject
 
-import org.endrylrm.ModBuilder.model.DependencyContainer
-import org.endrylrm.ModBuilder.model.JarContainer
+import org.endrylrm.ModBuilder.containers.DependencyContainer
+import org.endrylrm.ModBuilder.containers.JarContainer
+import org.endrylrm.ModBuilder.containers.ReplaceContainer
 import org.endrylrm.ModBuilder.model.ModDependencyInfo
-import org.endrylrm.ModBuilder.model.ReplaceContainer
 
 abstract class ModExtension @Inject constructor(objects: ObjectFactory)
 {

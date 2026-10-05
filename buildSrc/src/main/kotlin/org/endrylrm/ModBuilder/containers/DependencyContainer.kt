@@ -1,5 +1,6 @@
-package org.endrylrm.ModBuilder.model
+package org.endrylrm.ModBuilder.containers
 
+import org.endrylrm.ModBuilder.model.ModDependency
 import org.gradle.api.model.ObjectFactory
 
 class DependencyContainer(private val objects: ObjectFactory)
