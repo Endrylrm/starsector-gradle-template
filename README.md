@@ -198,7 +198,7 @@ generates the following in `mod_info.json`:
 
 Defines the Mod Dependencies in the `dependencies` that should be included in the generated `mod_info.json`.
 
-Use `add` to add a mod dependency:
+Use `add` to add 1 or more mod dependencies:
 
 ```kotlin
 dependencies {
@@ -206,6 +206,11 @@ dependencies {
         id = "example_dependency"
         name = "Example Mod Dependency"
         version = "0.1.0"
+    }
+
+    add {
+        id = "example_dependency_2"
+        name = "Example Mod Dependency 2"
     }
 }
 ```
