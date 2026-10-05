@@ -11,10 +11,10 @@ data class ModInfo(
     val utility: String,
     val description: String,
     val gameVersion: String,
-    val modPlugin: String,
-    val totalConversion: String? = null,
     val jars: List<String>,
+    val modPlugin: String,
     val dependencies: List<ModDependencyInfo>? = null,
+    val totalConversion: String? = null,
     val replace: List<String>? = null,
 )
 

@@ -76,10 +76,10 @@ abstract class GenerateModInfoTask : DefaultTask()
             utility = modUtility.get(),
             description = modDescription.get(),
             gameVersion = modGameVersion.get(),
-            modPlugin = modPlugin.get(),
-            totalConversion = modTotalConversion.orNull,
             jars = modJars.get(),
+            modPlugin = modPlugin.get(),
             dependencies = dependencies.takeIf { it.isNotEmpty() },
+            totalConversion = modTotalConversion.orNull,
             replace = modReplace.get().takeIf { it.isNotEmpty() },
         )
 

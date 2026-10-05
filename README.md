@@ -143,18 +143,17 @@ The `gameDirectory` property specifies the path to the Starsector installation. 
 
 The mod block contains the information used to generate the mod_info.json file.
 
-| Property        | Description                                                                                            |
-|-----------------|--------------------------------------------------------------------------------------------------------|
-| id              | Your Mod Id                                                                                            |
-| name            | Mod name displayed in Starsector                                                                       |
-| version         | Current Mod version (defaults to 0.1.0)                                                                |
-| author          | Mod author name / nickname                                                                             |
-| utility         | Is this a utility mod? (defaults to false)                                                             |
-| description     | Mod description                                                                                        |
-| modPlugin       | Main Java class used as the mod plugin                                                                 |
-| gameVersion     | Target Starsector version (defaults to 0.98a-RC8)                                                      |
-| totalConversion | whether this mod is a total conversion or not. defaults to null, so it will not show on the json file. |
-
+| Property        | Description                                                     |
+|-----------------|-----------------------------------------------------------------|
+| id              | Your Mod Id                                                     |
+| name            | Mod name displayed in Starsector                                |
+| version         | Current Mod version (defaults to 0.1.0)                         |
+| author          | Mod author name / nickname                                      |
+| utility         | Is this a utility mod? (defaults to false)                      |
+| description     | Mod description                                                 |
+| modPlugin       | Main Java class used as the mod plugin                          |
+| gameVersion     | Target Starsector version (defaults to 0.98a-RC8)               |
+| totalConversion | whether this mod is a total conversion or not. optional option. |
 
 Example:
 
