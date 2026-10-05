@@ -17,7 +17,7 @@ class ModBuilderPlugin : Plugin<Project>
     override fun apply(project: Project)
     {
         val modBuilder = project.extensions.create(
-            "ModBuilder",
+            "modBuilder",
             ModBuilderExtension::class.java
         )
 

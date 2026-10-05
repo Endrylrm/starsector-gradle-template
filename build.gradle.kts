@@ -7,7 +7,7 @@ plugins {
 // Game Directory
 val starsectorDir = file("E:/Fractal Softworks/Starsector")
 
-ModBuilder {
+modBuilder {
     gameDirectory = starsectorDir
 
     mod {

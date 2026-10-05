@@ -35,7 +35,34 @@ starsector-gradle-template/
 ├── mod/
 │   ├── data/
 │   ├── graphics/
-│   └── mod_info.json.template
+│   └── jars/
+│
+├── buildSrc/
+│   ├── src/
+│   │   └── main/
+│   │       ├── kotlin/
+│   │       │   └── org/
+│   │       │       └── endrylrm/
+│   │       │           └── ModBuilder/
+│   │       │               ├── extensions/
+│   │       │               │   ├── BuildExtension.kt
+│   │       │               │   ├── ModBuilderExtension.kt
+│   │       │               │   └── ModExtension.kt
+│   │       │               ├── model/
+│   │       │               │   ├── DependencyContainer.kt
+│   │       │               │   ├── JarContainer.kt
+│   │       │               │   ├── ModDependency.kt
+│   │       │               │   └── ModInfo.kt
+│   │       │               ├── tasks/
+│   │       │               │   ├── BuildModTask.kt
+│   │       │               │   ├── GenerateModInfoTask.kt
+│   │       │               │   └── InstallModTask.kt
+│   │       │               └── ModBuilderPlugin.kt
+│   │       └── resources/
+│   │           └── META-INF/
+│   │               └── gradle-plugins/
+│   │                   └── org.endrylrm.mod-builder.properties
+│   └── build.gradle.kts
 │
 ├── src/
 │   └── main/
@@ -63,25 +90,45 @@ starsector-gradle-template/
 
 ## Configuration
 
-The main mod configuration is stored in gradle.properties.
+The mod configuration is defined using the `ModBuilder` Gradle DSL in your `build.gradle.kts`.
 
-Example:
+```kotlin
+plugins {
+    id("org.endrylrm.mod-builder")
+}
 
-```
-starsectorDir=E:/Fractal Softworks/Starsector
+modBuilder {
+    gameDirectory.set(file("E:/Fractal Softworks/Starsector"))
 
-modId=starsector-gradle-template
-modName=Starsector Gradle Template
-modVersion=0.1.0
-modAuthor=Your Name
-modDescription=A Gradle template for Starsector mods.
-modPlugin=org.example.ExampleModPlugin
-modJarList=jars/ExampleMod.jar,jars/ExampleMod2.jar
-gameVersion=0.98a
+    mod {
+        id = "starsector-gradle-template"
+        name = "Starsector Gradle Template"
+        version = "0.1.0"
+        author = "Your Name"
+        utility = false
+        description = "A Gradle template for Starsector mods."
+        gameVersion = "0.98a-RC8"
 
-modDependency.1.id=example_dependency
-modDependency.1.name=Example Mod Dependency
-modDependency.1.version=0.1.0
+        jars {
+            add("jars/ExampleMod.jar")
+            add("jars/ExampleMod2.jar")
+        }
+
+        modPlugin = "org.example.ExampleModPlugin"
+
+        dependencies {
+            add {
+                id = "example_dependency"
+                name = "Example Mod Dependency"
+                version = "0.1.0"
+            }
+        }
+    }
+
+    build {
+        copyToGame = true
+    }
+}
 ```
 
 ### Game properties
@@ -104,7 +151,7 @@ The mod block contains the information used to generate the mod_info.json file.
 | author      | Mod author name / nickname                        |
 | utility     | Is this a utility mod? (defaults to false)        |
 | description | Mod description                                   |
-| plugin      | Main Java class used as the mod plugin            |
+| modPlugin   | Main Java class used as the mod plugin            |
 | gameVersion | Target Starsector version (defaults to 0.98a-RC8) |
 
 Example:
@@ -117,7 +164,7 @@ mod {
     author = "Example Author"
     utility = false
     description = "Example mod description."
-    plugin = "org.example.ExampleModPlugin"
+    modPlugin = "org.example.ExampleModPlugin"
     gameVersion = "0.98a-RC8"
 }
 ```
@@ -238,12 +285,13 @@ mod {
     author = "Example Author"
     utility = false
     description = "Example mod description."
-    plugin = "org.example.ExampleModPlugin"
     gameVersion = "0.98a-RC8"
 
     jars {
         add("jars/ExampleMod.jar")
     }
+
+    modPlugin = "org.example.ExampleModPlugin"
 
     dependencies {
         add {
@@ -265,11 +313,11 @@ generates the following `mod_info.json`:
     "author": "Example Author",
     "utility": false,
     "description": "Example mod description.",
-    "plugin": "org.example.ExampleMod",
     "gameVersion": "0.98a-RC8",
     "jars": [
         "jars/ExampleMod.jar"
     ],
+    "modPlugin": "org.example.ExampleMod",
     "dependencies": [
         {
             "id": "example_dependency",
