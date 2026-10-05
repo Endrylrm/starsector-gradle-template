@@ -1,17 +1,18 @@
 package org.endrylrm.ModBuilder.containers
 
-import org.endrylrm.ModBuilder.model.ModDependency
 import org.gradle.api.model.ObjectFactory
+
+import org.endrylrm.ModBuilder.extensions.ModDependencyExtension
 
 class DependencyContainer(private val objects: ObjectFactory)
 {
-    private val dependencies = mutableListOf<ModDependency>()
+    private val dependencies = mutableListOf<ModDependencyExtension>()
 
-    fun add(configure: ModDependency.() -> Unit) {
-        val dependency = objects.newInstance(ModDependency::class.java)
+    fun add(configure: ModDependencyExtension.() -> Unit) {
+        val dependency = objects.newInstance(ModDependencyExtension::class.java)
         dependency.configure()
         dependencies.add(dependency)
     }
 
-    fun all(): List<ModDependency> = dependencies.toList()
+    fun all(): List<ModDependencyExtension> = dependencies.toList()
 }
