@@ -1,5 +1,6 @@
+package org.endrylrm.ModBuilder.model
+
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class ModInfo(
@@ -9,15 +10,15 @@ data class ModInfo(
     val author: String,
     val utility: Boolean,
     val description: String,
-    val plugin: String,
     val gameVersion: String,
     val jars: List<String>,
-    val dependencies: List<ModDependency>
+    val modPlugin: String,
+    val dependencies: List<ModDependencyInfo>? = null
 )
 
-private val json = Json {
-    prettyPrint = true
-}
-
-fun ModInfo.toJson(): String =
-    json.encodeToString(this)
+@Serializable
+data class ModDependencyInfo(
+    val id: String,
+    val name: String,
+    val version: String? = null
+)

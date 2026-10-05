@@ -85,33 +85,200 @@ modDependency.1.version=0.1.0
 ```
 
 ### Game properties
+
+The `gameDirectory` property specifies the path to the Starsector installation. It is used by ModBuilder to access the Starsector API and to install the generated mod.
+
 | Property       | Description                         |
 |----------------|-------------------------------------|
-| starsectorDir  | Path to the Starsector installation |
+| gameDirectory  | Path to the Starsector installation |
 
-### mod_info.json properties
+### Mod configuration
 
-| Property                | Description                                              |
-|-------------------------|----------------------------------------------------------|
-| modId                   | Your Mod Id                                              |
-| modName                 | Mod name displayed in Starsector                         |
-| modVersion              | Current Mod version (defaults to 0.1.0)                  |
-| modAuthor               | Mod author name / nickname                               |
-| modIsUtility            | Is this a utility mod? (defaults to false)               |
-| modDescription          | Mod description                                          |
-| modPlugin               | Main Java class used as the mod plugin                   |
-| modJarList              | Jars file paths that this mod have                       |
-| gameVersion             | Target Starsector version (defaults to 0.98a-RC8)        |
-| modDependency.*.id      | Mod Dependency ID (* is the index, starting from 1)      |
-| modDependency.*.name    | Mod Dependency Name (* is the index, starting from 1)    |
-| modDependency.*.version | Mod Dependency Version (* is the index, starting from 1) |
+The mod block contains the information used to generate the mod_info.json file.
+
+| Property    | Description                                       |
+|-------------|---------------------------------------------------|
+| id          | Your Mod Id                                       |
+| name        | Mod name displayed in Starsector                  |
+| version     | Current Mod version (defaults to 0.1.0)           |
+| author      | Mod author name / nickname                        |
+| utility     | Is this a utility mod? (defaults to false)        |
+| description | Mod description                                   |
+| plugin      | Main Java class used as the mod plugin            |
+| gameVersion | Target Starsector version (defaults to 0.98a-RC8) |
+
+Example:
+
+```kotlin
+mod {
+    id = "example_mod"
+    name = "Example Mod"
+    version = "0.1.0"
+    author = "Example Author"
+    utility = false
+    description = "Example mod description."
+    plugin = "org.example.ExampleModPlugin"
+    gameVersion = "0.98a-RC8"
+}
+```
+
+
+### Jar Files
+
+The `jars` block defines the JAR files that should be included in the generated `mod_info.json`.
+
+Use `add()` to add a JAR path:
+
+```kotlin
+jars {
+    add("jars/ExampleMod.jar")
+    add("jars/ExampleMod2.jar")
+}
+```
+
+this block generates in `mod_info.json`:
+
+```json
+"jars": [
+    "jars/ExampleMod.jar",
+    "jars/ExampleMod2.jar"
+]
+```
+
+### Mod Dependencies
+
+Defines the Mod Dependencies in the `dependencies` that should be included in the generated `mod_info.json`.
+
+Use `add` to add a mod dependency:
+
+```kotlin
+dependencies {
+    add {
+        id = "example_dependency"
+        name = "Example Mod Dependency"
+        version = "0.1.0"
+    }
+}
+```
+
+The `version` property is optional:
+
+```kotlin
+dependencies {
+    add {
+        id = "example_dependency"
+        name = "Example Mod Dependency"
+    }
+}
+```
+
+When a dependency version is not specified, the `version` field is omitted from the generated `mod_info.json`.
+
+this block generates in `mod_info.json`:
+
+```json
+"dependencies": [
+  {
+    "id": "dependency_id",
+    "name": "Dependency Name"
+  },
+  {
+    "id": "dependency_id_2",
+    "name": "Dependency Name 2",
+    "version": "0.1.0"
+  }
+]
+```
 
 ### Build properties
 
-| Property        | Description                                       |
-|-----------------|---------------------------------------------------|
-| modOutputJar    | Output Jar file name.                             |
-| modFolder       | Name of the mod folder built by gradle.           |
+The `build` block controls how the mod is packaged.
+
+| Property   | Description                                                                                              |
+|------------|----------------------------------------------------------------------------------------------------------|
+| folderName | Name of the mod folder created under `build/mod/`. Defaults to the mod ID.                               |
+| copyToGame | Whether the generated mod should be installed into the Starsector `mods` directory. Defaults to `false`. |
+
+Example:
+
+```kotlin
+build {
+    folderName = "ExampleMod"
+    copyToGame = true
+}
+```
+
+If `folderName` is not specified, the mod ID is used:
+
+```kotlin
+mod {
+    id = "example_mod"
+}
+
+build {
+    // folderName defaults to "example_mod"
+}
+```
+
+### Generated `mod_json.info`
+
+ModBuilder generates the `mod_info.json` file under:
+
+```
+build/generated/mod_info.json
+```
+
+For example, the configuration:
+
+```kotlin
+mod {
+    id = "example_mod"
+    name = "Example Mod"
+    version = "0.1.0"
+    author = "Example Author"
+    utility = false
+    description = "Example mod description."
+    plugin = "org.example.ExampleModPlugin"
+    gameVersion = "0.98a-RC8"
+
+    jars {
+        add("jars/ExampleMod.jar")
+    }
+
+    dependencies {
+        add {
+            id = "example_dependency"
+            name = "Example Dependency"
+            version = "0.1.0"
+        }
+    }
+}
+```
+
+generates the following `mod_info.json`:
+
+```json
+{
+    "id": "example_mod",
+    "name": "Example Mod",
+    "version": "0.1.0",
+    "author": "Example Author",
+    "utility": false,
+    "description": "Example mod description.",
+    "plugin": "org.example.ExampleMod",
+    "gameVersion": "0.98a-RC8",
+    "jars": [
+        "jars/ExampleMod.jar"
+    ],
+    "dependencies": [
+        {
+            "id": "example_dependency",
+            "name": "Example Dependency",
+            "version": "0.1.0"
+        }
+    ]
+}
+```
 
 ## Building the Project
 
@@ -152,7 +319,36 @@ Your mod structure will look like this:
     └── <modJarFile>.jar
 ```
 
-The mod_info.json file is generated by Gradle and its values are populated using gradle.properties.
+The mod_info.json file is generated by Gradle and its values are populated using Gradle build script and will look like this:
+
+```json
+{
+    "id": "example_mod",
+    "name": "Example Mod",
+    "version": "0.1.0",
+    "author": "Example Author",
+    "utility": false,
+    "description": "Example mod description.",
+    "plugin": "org.example.ExampleMod",
+    "gameVersion": "0.98a-RC8",
+    "jars": [
+        "jars/ExampleMod.jar"
+    ],
+    "dependencies": [
+        {
+            "id": "dependency_id",
+            "name": "Dependency Name"
+        },
+        {
+            "id": "dependency_id_2",
+            "name": "Dependency Name 2",
+            "version": "0.1.0"
+        }
+    ]
+}
+```
+
+The Gradle script source is in `buildSrc/src/` in case you want to improve it.
 
 ## Installing the Mod
 

@@ -1,41 +1,53 @@
 plugins {
     id("java")
 	kotlin("jvm") version "2.3.21"
+    id("org.endrylrm.mod-builder")
 }
 
-val properties = ModProperties(project)
+// Game Directory
+val starsectorDir = file("E:/Fractal Softworks/Starsector")
 
-// game directory
-val starsectorDir = properties.get("starsectorDir")
+ModBuilder {
+    gameDirectory = starsectorDir
 
-// mod_info.json config
-val modJarFiles = properties
-    .get("modJarList")
-    .split(",")
-    .map(String::trim)
-    .filter(String::isNotEmpty)
+    mod {
+        id = "example_mod"
+        name = "Example Mod"
+        version = "0.1.0"
+        author = "Example Author"
+        utility = false
+        description = "Example mod description."
+        gameVersion = "0.98a-RC8"
 
-val modInfo = ModInfo(
-    id = properties.get("modId"),
-    name = properties.get("modName"),
-    version = properties.get("modVersion"),
-    author = properties.get("modAuthor"),
-    utility = properties.getOrDefault("modIsUtility", "false").toBoolean(),
-    description = properties.get("modDescription"),
-    plugin = properties.get("modPlugin"),
-    gameVersion = properties.getOrDefault("gameVersion", "0.98a-RC8"),
-    jars = modJarFiles,
-    dependencies = getModDependencies()
-)
+        jars {
+            add("jars/ExampleMod.jar")
+        }
 
-val modInfoJson = modInfo.toJson()
+        modPlugin = "org.example.ExampleModPlugin"
 
-// build configuration
-val modFolder = properties.getOrDefault("modFolder", modInfo.id)
-val modOutputJar = properties.getOrDefault("modOutputJar", modInfo.id)
+        /*
+        dependencies {
+            add {
+                id = "dependency_id"
+                name = "Dependency Name"
+            }
+
+            add {
+                id = "dependency_id_2"
+                name = "Dependency Name 2"
+                version = "0.1.0"
+            }
+        } */
+    }
+
+    build {
+        folderName = "ExampleMod"
+        copyToGame = false
+    }
+}
 
 group = "org.example"
-version = modInfo.version
+version = "0.1.0"
 
 repositories {
     mavenCentral()
@@ -53,57 +65,15 @@ kotlin {
 
 dependencies {
     compileOnly(files(
-        "$starsectorDir/starsector-core/starfarer.api.jar",
-        "$starsectorDir/starsector-core/starfarer_obf.jar",
-        "$starsectorDir/starsector-core/log4j-1.2.9.jar",
-        "$starsectorDir/starsector-core/lwjgl.jar",
-        "$starsectorDir/starsector-core/lwjgl_util.jar",
-        "$starsectorDir/starsector-core/fs.common_obf.jar"
+        "${starsectorDir.absolutePath}/starsector-core/starfarer.api.jar",
+        "${starsectorDir.absolutePath}/starsector-core/starfarer_obf.jar",
+        "${starsectorDir.absolutePath}/starsector-core/log4j-1.2.9.jar",
+        "${starsectorDir.absolutePath}/starsector-core/lwjgl.jar",
+        "${starsectorDir.absolutePath}/starsector-core/lwjgl_util.jar",
+        "${starsectorDir.absolutePath}/starsector-core/fs.common_obf.jar"
     ))
 }
 
 tasks.jar {
-    archiveFileName.set(modOutputJar)
-}
-
-val modInfoFile = layout.buildDirectory.file("generated/mod_info.json")
-
-tasks.register("generateModInfo") {
-    outputs.file(modInfoFile)
-
-    doLast {
-        modInfoFile.get().asFile.apply {
-            parentFile.mkdirs()
-            writeText(modInfoJson)
-        }
-    }
-}
-
-tasks.register<Copy>("buildMod") {
-    dependsOn(tasks.jar)
-    dependsOn("generateModInfo")
-
-    println("Build mod: ${modInfo.name}...")
-    val modDir = layout.buildDirectory.dir("mod/${modFolder}")
-
-    into(modDir)
-
-    from("mod")
-
-    from(modInfoFile)
-
-    into("jars") {
-        from(tasks.jar)
-    }
-}
-
-tasks.register<Sync>("installMod") {
-    dependsOn("buildMod")
-
-    println("Installing mod: ${modInfo.name} in Starsector mods folder...")
-    val modDir = layout.buildDirectory.dir("mod/${modFolder}")
-    val starsectorModsDir = file("$starsectorDir/mods/${modFolder}")
-
-    from(modDir)
-    into(starsectorModsDir)
+    archiveFileName.set("ExampleMod.jar")
 }

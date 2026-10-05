@@ -14,7 +14,7 @@ class ExampleScript : EveryFrameScript
             return
         }
 
-        Global.getLogger(javaClass).info("My mod - Script has already advanced!")
+        Global.getLogger(javaClass).info("Example mod - Script has already advanced!")
         done = true
     }
 
