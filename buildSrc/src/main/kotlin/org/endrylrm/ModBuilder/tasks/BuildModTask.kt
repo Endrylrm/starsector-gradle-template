@@ -2,14 +2,19 @@ package org.endrylrm.ModBuilder.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileSystemOperations
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import javax.inject.Inject
 
 abstract class BuildModTask : DefaultTask()
 {
+    @get:Inject
+    protected abstract val fileSystemOperations: FileSystemOperations
+
     @get:InputFile
     abstract val generatedModInfo: RegularFileProperty
 
@@ -25,7 +30,7 @@ abstract class BuildModTask : DefaultTask()
     @TaskAction
     fun build()
     {
-        project.sync {
+        fileSystemOperations.sync {
             into(outputDirectory)
 
             // mod_info.json
