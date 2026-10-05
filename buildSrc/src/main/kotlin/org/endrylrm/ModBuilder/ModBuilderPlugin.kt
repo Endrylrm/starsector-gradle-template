@@ -27,12 +27,11 @@ class ModBuilderPlugin : Plugin<Project>
             modName.set(modBuilder.getMod().name)
             modVersion.set(modBuilder.getMod().version)
             modAuthor.set(modBuilder.getMod().author)
-
-            modUtility.set(modBuilder.getMod().utility)
+            modUtility.set(modBuilder.getMod().utility.map { it.toString() })
             modDescription.set(modBuilder.getMod().description)
-
-            modPlugin.set(modBuilder.getMod().modPlugin)
             modGameVersion.set(modBuilder.getMod().gameVersion)
+            modPlugin.set(modBuilder.getMod().modPlugin)
+            modTotalConversion.set(modBuilder.getMod().totalConversion.map { it.toString() })
 
             modJars.set(modBuilder.getMod().getJars())
             modDependencies.set(
@@ -40,6 +39,7 @@ class ModBuilderPlugin : Plugin<Project>
                     modBuilder.getMod().getDependencies()
                 )
             )
+            modReplace.set(modBuilder.getMod().getReplace())
 
             outputFile.set(project.layout.buildDirectory.file("generated/mod_info.json"))
         }

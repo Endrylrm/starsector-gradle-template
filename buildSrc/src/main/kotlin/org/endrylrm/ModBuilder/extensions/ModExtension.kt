@@ -7,6 +7,7 @@ import javax.inject.Inject
 import org.endrylrm.ModBuilder.model.DependencyContainer
 import org.endrylrm.ModBuilder.model.JarContainer
 import org.endrylrm.ModBuilder.model.ModDependencyInfo
+import org.endrylrm.ModBuilder.model.ReplaceContainer
 
 abstract class ModExtension @Inject constructor(objects: ObjectFactory)
 {
@@ -14,10 +15,12 @@ abstract class ModExtension @Inject constructor(objects: ObjectFactory)
     abstract val name: Property<String>
     abstract val version: Property<String>
     abstract val author: Property<String>
-
     abstract val utility: Property<Boolean>
     abstract val description: Property<String>
     abstract val gameVersion: Property<String>
+    abstract val modPlugin: Property<String>
+
+    abstract val totalConversion: Property<Boolean>
 
     private val jarContainer = JarContainer()
 
@@ -26,8 +29,6 @@ abstract class ModExtension @Inject constructor(objects: ObjectFactory)
     }
 
     fun getJars(): List<String> = jarContainer.all()
-
-    abstract val modPlugin: Property<String>
 
     private val dependencyContainer = DependencyContainer(objects)
 
@@ -44,6 +45,14 @@ abstract class ModExtension @Inject constructor(objects: ObjectFactory)
                 version = it.version.orNull
             )
         }
+
+    private val replaceContainer = ReplaceContainer()
+
+    fun replace(configure: ReplaceContainer.() -> Unit) {
+        replaceContainer.configure()
+    }
+
+    fun getReplace(): List<String> = replaceContainer.all()
 
     init
     {

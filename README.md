@@ -143,16 +143,18 @@ The `gameDirectory` property specifies the path to the Starsector installation. 
 
 The mod block contains the information used to generate the mod_info.json file.
 
-| Property    | Description                                       |
-|-------------|---------------------------------------------------|
-| id          | Your Mod Id                                       |
-| name        | Mod name displayed in Starsector                  |
-| version     | Current Mod version (defaults to 0.1.0)           |
-| author      | Mod author name / nickname                        |
-| utility     | Is this a utility mod? (defaults to false)        |
-| description | Mod description                                   |
-| modPlugin   | Main Java class used as the mod plugin            |
-| gameVersion | Target Starsector version (defaults to 0.98a-RC8) |
+| Property        | Description                                                                                            |
+|-----------------|--------------------------------------------------------------------------------------------------------|
+| id              | Your Mod Id                                                                                            |
+| name            | Mod name displayed in Starsector                                                                       |
+| version         | Current Mod version (defaults to 0.1.0)                                                                |
+| author          | Mod author name / nickname                                                                             |
+| utility         | Is this a utility mod? (defaults to false)                                                             |
+| description     | Mod description                                                                                        |
+| modPlugin       | Main Java class used as the mod plugin                                                                 |
+| gameVersion     | Target Starsector version (defaults to 0.98a-RC8)                                                      |
+| totalConversion | whether this mod is a total conversion or not. defaults to null, so it will not show on the json file. |
+
 
 Example:
 
@@ -183,7 +185,7 @@ jars {
 }
 ```
 
-this block generates in `mod_info.json`:
+generates the following in `mod_info.json`:
 
 ```json
 "jars": [
@@ -219,21 +221,35 @@ dependencies {
 }
 ```
 
-When a dependency version is not specified, the `version` field is omitted from the generated `mod_info.json`.
-
-this block generates in `mod_info.json`:
+generates the following in `mod_info.json` as an example:
 
 ```json
 "dependencies": [
   {
-    "id": "dependency_id",
-    "name": "Dependency Name"
-  },
-  {
-    "id": "dependency_id_2",
-    "name": "Dependency Name 2",
+    "id": "example_dependency",
+    "name": "Example Mod Dependency",
     "version": "0.1.0"
   }
+]
+```
+
+### Replace properties
+
+Defines the files to be replaced in the game, should be only used together with `totalConversion` option as it makes your mod incompatible with others.
+
+Use `add` to add a file to replace from the game:
+
+```kotlin
+replace {
+    add("data/missions/mission_list.csv")
+}
+```
+
+generates the following in `mod_info.json` as an example:
+
+```json
+"replace": [
+    "data/missions/mission_list.csv"
 ]
 ```
 
@@ -311,7 +327,7 @@ generates the following `mod_info.json`:
     "name": "Example Mod",
     "version": "0.1.0",
     "author": "Example Author",
-    "utility": false,
+    "utility": "false",
     "description": "Example mod description.",
     "gameVersion": "0.98a-RC8",
     "jars": [

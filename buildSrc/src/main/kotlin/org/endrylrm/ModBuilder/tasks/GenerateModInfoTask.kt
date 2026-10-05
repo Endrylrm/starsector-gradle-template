@@ -6,6 +6,7 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
@@ -27,7 +28,7 @@ abstract class GenerateModInfoTask : DefaultTask()
     abstract val modAuthor: Property<String>
 
     @get:Input
-    abstract val modUtility: Property<Boolean>
+    abstract val modUtility: Property<String>
 
     @get:Input
     abstract val modDescription: Property<String>
@@ -39,10 +40,19 @@ abstract class GenerateModInfoTask : DefaultTask()
     abstract val modGameVersion: Property<String>
 
     @get:Input
+    @get:Optional
+    abstract val modTotalConversion: Property<String>
+
+    @get:Input
     abstract val modJars: ListProperty<String>
 
     @get:Input
+    @get:Optional
     abstract val modDependencies: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val modReplace: ListProperty<String>
 
     @get:OutputFile
     abstract val outputFile: RegularFileProperty
@@ -66,9 +76,11 @@ abstract class GenerateModInfoTask : DefaultTask()
             utility = modUtility.get(),
             description = modDescription.get(),
             gameVersion = modGameVersion.get(),
-            jars = modJars.get(),
             modPlugin = modPlugin.get(),
-            dependencies = dependencies.takeIf { it.isNotEmpty() }
+            totalConversion = modTotalConversion.orNull,
+            jars = modJars.get(),
+            dependencies = dependencies.takeIf { it.isNotEmpty() },
+            replace = modReplace.get().takeIf { it.isNotEmpty() },
         )
 
         outputFile.get().asFile.apply {

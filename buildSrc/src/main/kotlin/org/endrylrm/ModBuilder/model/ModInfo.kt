@@ -8,12 +8,14 @@ data class ModInfo(
     val name: String,
     val version: String,
     val author: String,
-    val utility: Boolean,
+    val utility: String,
     val description: String,
     val gameVersion: String,
-    val jars: List<String>,
     val modPlugin: String,
-    val dependencies: List<ModDependencyInfo>? = null
+    val totalConversion: String? = null,
+    val jars: List<String>,
+    val dependencies: List<ModDependencyInfo>? = null,
+    val replace: List<String>? = null,
 )
 
 @Serializable

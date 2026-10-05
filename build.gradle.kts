@@ -24,8 +24,13 @@ modBuilder {
         }
 
         modPlugin = "org.example.ExampleModPlugin"
-
         /*
+        totalConversion = false
+
+        replace {
+            add("data/missions/mission_list.csv")
+        }
+
         dependencies {
             add {
                 id = "dependency_id"
