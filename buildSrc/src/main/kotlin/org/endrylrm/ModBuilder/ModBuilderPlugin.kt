@@ -4,7 +4,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.Sync
+import org.gradle.api.tasks.Copy
+import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import kotlinx.serialization.json.Json
 
@@ -13,6 +14,7 @@ import org.endrylrm.ModBuilder.extensions.ModJarExtension
 import org.endrylrm.ModBuilder.tasks.BuildModTask
 import org.endrylrm.ModBuilder.tasks.GenerateModInfoTask
 import org.endrylrm.ModBuilder.tasks.InstallModTask
+import org.gradle.api.tasks.Sync
 
 class ModBuilderPlugin : Plugin<Project>
 {
@@ -31,20 +33,33 @@ class ModBuilderPlugin : Plugin<Project>
         )
 
         val modJarFiles = project.files()
-        val modJarTasks = mutableListOf<TaskProvider<Jar>>()
+        val modJarTasks = mutableListOf<TaskProvider<Sync>>()
 
         modJarContainer.configureEach {
             val modJar = this
 
-            project.tasks.register<Sync>(name) {
-                dependsOn(
-                    project.provider {
-                        project.project(
-                            modJar.sourceProject.get()
-                        ).tasks.named("jar")
-                    }
-                )
+            val sourceJar = project.provider {
+                project.project(modJar.sourceProject.get())
+            }.flatMap {
+                it.tasks.named<Jar>("jar")
             }
+
+            val task = project.tasks.register<Sync>(name) {
+                dependsOn(sourceJar)
+
+                from(sourceJar) {
+                    rename {
+                        modJar.outputFilename.get()
+                    }
+                }
+
+                into(project.layout.buildDirectory.dir("libs"))
+
+                outputs.upToDateWhen { false }
+            }
+
+            modJarFiles.from(task)
+            modJarTasks += task
         }
 
         val generateModInfo = project.tasks.register<GenerateModInfoTask>("generateModInfo")
