@@ -42,6 +42,7 @@ abstract class BuildModTask : DefaultTask()
 
             // Mod Resources
             from(modDirectory) {
+                exclude("**/readme.txt")
                 into(".")
             }
 
