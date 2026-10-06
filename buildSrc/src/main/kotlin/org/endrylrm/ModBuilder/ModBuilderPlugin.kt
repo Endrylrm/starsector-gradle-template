@@ -3,11 +3,13 @@ package org.endrylrm.ModBuilder
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.Sync
 import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.named
 import kotlinx.serialization.json.Json
 
 import org.endrylrm.ModBuilder.extensions.ModBuilderExtension
+import org.endrylrm.ModBuilder.extensions.ModJarExtension
 import org.endrylrm.ModBuilder.tasks.BuildModTask
 import org.endrylrm.ModBuilder.tasks.GenerateModInfoTask
 import org.endrylrm.ModBuilder.tasks.InstallModTask
@@ -20,6 +22,30 @@ class ModBuilderPlugin : Plugin<Project>
             "modBuilder",
             ModBuilderExtension::class.java
         )
+
+        // Mod Jar creation from projects
+        val modJarContainer = project.objects.domainObjectContainer(ModJarExtension::class.java)
+        project.extensions.add(
+            "modJars",
+            modJarContainer
+        )
+
+        val modJarFiles = project.files()
+        val modJarTasks = mutableListOf<TaskProvider<Jar>>()
+
+        modJarContainer.configureEach {
+            val modJar = this
+
+            project.tasks.register<Sync>(name) {
+                dependsOn(
+                    project.provider {
+                        project.project(
+                            modJar.sourceProject.get()
+                        ).tasks.named("jar")
+                    }
+                )
+            }
+        }
 
         val generateModInfo = project.tasks.register<GenerateModInfoTask>("generateModInfo")
         {
@@ -52,11 +78,7 @@ class ModBuilderPlugin : Plugin<Project>
                 }
             )
 
-            jarFile.set(
-                project.tasks.named<Jar>("jar").flatMap {
-                    it.archiveFile
-                }
-            )
+            jarFiles.from(modJarFiles)
 
             modDirectory.set(project.layout.projectDirectory.dir("mod"))
 
@@ -67,7 +89,7 @@ class ModBuilderPlugin : Plugin<Project>
             )
 
             dependsOn(generateModInfo)
-            dependsOn(project.tasks.named("jar"))
+            dependsOn(modJarTasks)
         }
 
         val installMod = project.tasks.register<InstallModTask>("installMod")

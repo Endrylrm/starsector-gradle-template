@@ -25,7 +25,7 @@ The template uses Gradle Wrapper, so a separate Gradle installation is not requi
 
 ## Project Structure
 
-The project structure shows the interoperability between Java and Kotlin for developing a mod for Starsector, it is not necessary to use both languages at the same time.
+The template separates the mod's source code from its Starsector resources and provides a custom Gradle plugin for managing the build process.
 
 ```
 starsector-gradle-template/
@@ -35,7 +35,8 @@ starsector-gradle-template/
 ├── mod/
 │   ├── data/
 │   ├── graphics/
-│   └── jars/
+│   ├── jars/
+│   └── sounds/
 │
 ├── buildSrc/
 │   ├── src/
@@ -44,14 +45,17 @@ starsector-gradle-template/
 │   │       │   └── org/
 │   │       │       └── endrylrm/
 │   │       │           └── ModBuilder/
+│   │       │               ├── containers/
+│   │       │               │   ├── DependencyContainer.kt
+│   │       │               │   ├── JarContainer.kt
+│   │       │               │   └── ReplaceContainer.kt
 │   │       │               ├── extensions/
 │   │       │               │   ├── BuildExtension.kt
 │   │       │               │   ├── ModBuilderExtension.kt
-│   │       │               │   └── ModExtension.kt
+│   │       │               │   ├── ModDependencyExtension.kt
+│   │       │               │   ├── ModExtension.kt
+│   │       │               │   └── ModJarExtension.kt
 │   │       │               ├── model/
-│   │       │               │   ├── DependencyContainer.kt
-│   │       │               │   ├── JarContainer.kt
-│   │       │               │   ├── ModDependency.kt
 │   │       │               │   └── ModInfo.kt
 │   │       │               ├── tasks/
 │   │       │               │   ├── BuildModTask.kt
@@ -64,19 +68,19 @@ starsector-gradle-template/
 │   │                   └── org.endrylrm.mod-builder.properties
 │   └── build.gradle.kts
 │
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── org/
-│       │       └── example/
-│       │           └── ModPlugin.java
-│       │
-│       ├── kotlin/
-│       │   └── org/
-│       │       └── example/
-│       │           └── ExampleScript.kt
-│       │
-│       └── resources/
+├── ExampleMod/
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/
+│   │       │   └── org/
+│   │       │       └── example/
+│   │       │           └── ModPlugin.java
+│   │       ├── kotlin/
+│   │       │   └── org/
+│   │       │       └── example/
+│   │       │           └── ExampleScript.kt
+│   │       └── resources/
+│   └── build.gradle.kts
 │
 ├── .gitignore
 ├── build.gradle.kts
@@ -88,9 +92,60 @@ starsector-gradle-template/
 └── settings.gradle.kts
 ```
 
+### mod
+
+The mod directory contains the resources that make up the Starsector mod itself.
+
+It follows the directory structure expected by Starsector and is kept separate from the source code in ExampleMod.
+
+- `data/` - Starsector data files, such as ship definitions, weapon configurations, factions, settings, and other mod data.
+- `graphics/` - Textures, sprites, and other graphical assets used by the mod.
+- `jars/` - JAR files and libraries required by the mod at runtime.
+- `sounds/` - Sound effects, music, and other audio assets used by the mod.
+
+### ExampleMod
+
+The Example Mod shows the interoperability between Java and Kotlin for developing a mod for Starsector, it is not necessary to use both languages at the same time, just use the one you are most comfortable with.
+
+It uses the standard Gradle source-set layout and supports both Java and Kotlin:
+
+- `src/main/java/` - Java source files.
+- `src/main/kotlin/` - Kotlin source files.
+- `src/main/resources/` - Resources associated with the source code.
+
+The separation between ExampleMod and mod keeps the source code and Starsector resources organized independently, while the custom Gradle plugin handles combining them during the build process.
+
+### buildSrc
+
+The `buildSrc` directory contains the custom Gradle plugin that provides the build system for the template.
+
+The plugin is responsible for configuring the mod, managing dependencies, generating `mod_info.json`, building the mod, and installing it into the Starsector mods directory.
+
+Its source code is organized into three main areas:
+
+- `containers/` - Containers used to group and manage build-related data.
+- `extensions/` - Gradle DSL extensions used to configure the mod and its dependencies.
+- `model/` - Internal data models used by the build system.
+- `tasks/` - Custom Gradle tasks for building, generating metadata, and installing the mod.
+- `ModBuilderPlugin.kt` - The entry point of the custom Gradle plugin.
+
+The plugin is registered through `META-INF/gradle-plugins/`, allowing it to be applied using its Gradle plugin ID.
+
+### Gradle Configuration
+
+The root Gradle files configure the project and its build environment.
+
+- `settings.gradle.kts` - Defines the Gradle project structure.
+- `build.gradle.kts` - Contains the root-level build configuration.
+- `gradle.properties` - Contains shared Gradle properties.
+- `gradle/wrapper/` - Contains the Gradle Wrapper configuration.
+- `gradlew` / `gradlew.bat` - Gradle Wrapper scripts for Unix-like systems and Windows.
+
 ## Configuration
 
 The mod configuration is defined using the `ModBuilder` Gradle DSL in your `build.gradle.kts`.
+
+The game directory is configured in `gradle.properties`.
 
 ```kotlin
 plugins {
@@ -127,6 +182,18 @@ modBuilder {
 
     build {
         copyToGame = true
+    }
+}
+
+modJars {
+    create("exampleMod") {
+        outputFilename = "ExampleMod.jar"
+        from(project(":ExampleMod"))
+    }
+
+    create("exampleMod2") {
+        outputFilename = "ExampleMod2.jar"
+        from(project(":ExampleMod2"))
     }
 }
 ```
@@ -167,6 +234,7 @@ mod {
     description = "Example mod description."
     modPlugin = "org.example.ExampleModPlugin"
     gameVersion = "0.98a-RC8"
+    totalConversion = false
 }
 ```
 
@@ -187,10 +255,12 @@ jars {
 generates the following in `mod_info.json`:
 
 ```json
-"jars": [
+{
+  "jars": [
     "jars/ExampleMod.jar",
     "jars/ExampleMod2.jar"
-]
+  ]
+}
 ```
 
 ### Mod Dependencies
@@ -228,13 +298,15 @@ dependencies {
 generates the following in `mod_info.json` as an example:
 
 ```json
-"dependencies": [
-  {
-    "id": "example_dependency",
-    "name": "Example Mod Dependency",
-    "version": "0.1.0"
-  }
-]
+{
+  "dependencies": [
+    {
+      "id": "example_dependency",
+      "name": "Example Mod Dependency",
+      "version": "0.1.0"
+    }
+  ]
+}
 ```
 
 ### Replace properties
@@ -252,9 +324,11 @@ replace {
 generates the following in `mod_info.json` as an example:
 
 ```json
-"replace": [
+{
+  "replace": [
     "data/missions/mission_list.csv"
-]
+  ]
+}
 ```
 
 ### Build properties
@@ -345,6 +419,35 @@ generates the following `mod_info.json`:
             "version": "0.1.0"
         }
     ]
+}
+```
+
+### modJars - Jar building
+
+The `modJars` block defines the JAR files that should be built from the Gradle projects in the root folder.
+
+Each `modJar` references another Gradle project that produces the JAR. ModBuilder will build the referenced project's `jar` task and include the resulting JAR in the `jars` directory of the generated mod.
+
+| Property       | Description                                                  |
+|----------------|--------------------------------------------------------------|
+| outputFilename | Filename to use for the JAR inside the generated mod         |
+| sourceProject  | Gradle project that produces the JAR                         |
+
+The `create` name is used to uniquely identify each mod JAR configuration and its corresponding Gradle task.
+
+Example:
+
+```kotlin
+modJars {
+    create("exampleMod") {
+        outputFilename = "ExampleMod.jar"
+        from(project(":ExampleMod"))
+    }
+
+    create("exampleLibrary") {
+        outputFilename = "ExampleLibrary.jar"
+        from(project(":ExampleLibrary"))
+    }
 }
 ```
 
