@@ -5,6 +5,15 @@ plugins {
 // Game Directory
 val starsectorDir = providers.gradleProperty("starsectorDir").get()
 
+val starsectorJars = files(
+    "$starsectorDir/starsector-core/starfarer.api.jar",
+    "$starsectorDir/starsector-core/starfarer_obf.jar",
+    "$starsectorDir/starsector-core/log4j-1.2.9.jar",
+    "$starsectorDir/starsector-core/lwjgl.jar",
+    "$starsectorDir/starsector-core/lwjgl_util.jar",
+    "$starsectorDir/starsector-core/fs.common_obf.jar"
+)
+
 modBuilder {
     gameDirectory = file(starsectorDir)
 
@@ -53,5 +62,16 @@ modJars {
     create("exampleMod") {
         outputFilename = "ExampleMod.jar"
         from(project(":ExampleMod"))
+    }
+}
+
+subprojects {
+    pluginManager.withPlugin("java") {
+        dependencies {
+            add(
+                "compileOnly",
+                starsectorJars
+            )
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 A Gradle-based template for creating mods for **Starsector 0.98a-RC8**.
 
-This template provides a ready-to-use development environment with:
+This template provides a ready-to-use development environment for multi project builds with:
 
 - Java 17 and Kotlin support
 - Gradle
