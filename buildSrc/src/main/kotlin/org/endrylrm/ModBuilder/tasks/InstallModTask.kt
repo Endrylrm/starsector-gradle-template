@@ -25,6 +25,7 @@ abstract class InstallModTask : DefaultTask()
         fileSystemOperations.sync {
             from(modDirectory)
             into(gameModDirectory)
+            println("installed in: ${gameModDirectory.get().asFile}...")
         }
     }
 }

@@ -87,5 +87,7 @@ abstract class GenerateModInfoTask : DefaultTask()
             parentFile.mkdirs()
             writeText(json.encodeToString(modInfo))
         }
+
+        println("generated mod_info.json...")
     }
 }

@@ -50,6 +50,8 @@ abstract class BuildModTask : DefaultTask()
             from(jarFiles) {
                 into("jars")
             }
+
+            println("mod built in: ${outputDirectory.get().asFile}...")
         }
     }
 }
