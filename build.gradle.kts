@@ -15,8 +15,6 @@ val starsectorJars = files(
 )
 
 modBuilder {
-    gameDirectory = file(starsectorDir)
-
     mod {
         id = "example_mod"
         name = "Example Mod"

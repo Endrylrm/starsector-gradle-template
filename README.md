@@ -145,16 +145,21 @@ The root Gradle files configure the project and its build environment.
 
 The mod configuration is defined using the `ModBuilder` Gradle DSL in your `build.gradle.kts`.
 
-The game directory is configured in `gradle.properties`.
+The Starsector directory is configured in `gradle.properties` by the variable `starsectorDir`.
 
+### gradle.properties
+
+```
+starsectorDir=E:/Fractal Softworks/Starsector
+```
+
+### build.gradle.kts
 ```kotlin
 plugins {
     id("org.endrylrm.mod-builder")
 }
 
 modBuilder {
-    gameDirectory.set(file("E:/Fractal Softworks/Starsector"))
-
     mod {
         id = "starsector-gradle-template"
         name = "Starsector Gradle Template"
@@ -197,14 +202,6 @@ modJars {
     }
 }
 ```
-
-### Game properties
-
-The `gameDirectory` property specifies the path to the Starsector installation. It is used by ModBuilder to access the Starsector API and to install the generated mod.
-
-| Property       | Description                         |
-|----------------|-------------------------------------|
-| gameDirectory  | Path to the Starsector installation |
 
 ### Mod configuration
 

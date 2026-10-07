@@ -19,6 +19,10 @@ class ModBuilderPlugin : Plugin<Project>
 {
     override fun apply(project: Project)
     {
+        val starsectorDir = project.providers
+            .gradleProperty("starsectorDir")
+            .map { project.layout.projectDirectory.dir(it) }
+
         val modBuilder = project.extensions.create(
             "modBuilder",
             ModBuilderExtension::class.java
@@ -115,7 +119,9 @@ class ModBuilderPlugin : Plugin<Project>
             )
 
             gameModDirectory.set(
-                modBuilder.gameDirectory.dir("mods/${modBuilder.getBuild().folderName.get()}")
+                starsectorDir.zip(modBuilder.getBuild().folderName) { directory, folderName ->
+                    directory.dir("mods/$folderName")
+                }
             )
 
             dependsOn(buildMod)

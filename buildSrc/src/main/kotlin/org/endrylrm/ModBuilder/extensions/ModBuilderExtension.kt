@@ -1,13 +1,10 @@
 package org.endrylrm.ModBuilder.extensions
 
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
 abstract class ModBuilderExtension @Inject constructor(objects: ObjectFactory)
 {
-    abstract val gameDirectory: DirectoryProperty
-
     private val modExtension = objects.newInstance(ModExtension::class.java)
     private val buildExtension = objects.newInstance(BuildExtension::class.java)
 
